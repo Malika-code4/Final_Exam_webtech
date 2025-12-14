@@ -7,10 +7,10 @@
  */
 
 // Define constants
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'memory_card_game');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', '169.239.251.102:34');
+define('DB_NAME', 'webtech_2025A_fannareme_abdou');
+define('DB_USER', 'fannareme.abdou');
+define('DB_PASS', 'fa889033');
 
 // Disable error reporting to browser (prevent breaking JSON)
 error_reporting(E_ALL);

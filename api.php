@@ -397,6 +397,32 @@ class Statistics {
 
         return $stmt->fetch();
     }
+
+    /**
+     * Get player leaderboard (Replacing View)
+     */
+    public function getPlayerLeaderboard($limit = 10) {
+        $query = "SELECT 
+                    p.player_id,
+                    p.username,
+                    s.total_games,
+                    s.total_wins,
+                    s.best_score,
+                    s.best_time,
+                    s.average_moves,
+                    s.average_time
+                FROM players p
+                INNER JOIN statistics s 
+                ON p.player_id = s.player_id
+                ORDER BY s.best_score DESC, s.best_time ASC
+                LIMIT :limit";
+                
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }
 
 // ============================================================================
@@ -466,6 +492,8 @@ class APIRouter {
                 return $this->getPlayerStats();
             case 'get_overall_stats':
                 return $this->getOverallStats();
+            case 'get_player_leaderboard':
+                return $this->getPlayerLeaderboard();
             
             // Multiplayer
             case 'create_room':
@@ -487,7 +515,12 @@ class APIRouter {
                     'available_actions' => [
                         'create_player', 'get_player', 'get_all_players', 'update_player', 'delete_player',
                         'create_game', 'get_game', 'get_player_games', 'update_game', 'delete_game',
-                        'get_leaderboard', 'get_player_stats', 'get_overall_stats',
+                        'get_leaderboard', 'get_player_stats', 'get_overall_stats', 'get_player_leaderboard'
+                    ]
+                ], 400);
+        }
+    }
+
     private function updateProfile() {
         // Handle FormData (Multipart)
         $playerId = $_POST['player_id'] ?? null;
@@ -696,6 +729,13 @@ class APIRouter {
     private function getOverallStats() {
         $stats = new Statistics($this->db);
         $result = $stats->getOverallStats();
+        return $this->response($result);
+    }
+
+    private function getPlayerLeaderboard() {
+        $stats = new Statistics($this->db);
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $result = $stats->getPlayerLeaderboard($limit);
         return $this->response($result);
     }
 

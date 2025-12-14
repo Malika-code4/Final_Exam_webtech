@@ -8,15 +8,11 @@
 -- ============================================================================
 
 -- Drop database if exists (for clean installation)
-DROP DATABASE IF EXISTS memory_card_game;
+-- DROP DATABASE IF EXISTS memory_card_game;
 
--- Create database
-CREATE DATABASE memory_card_game 
-CHARACTER SET utf8mb4 
-COLLATE utf8mb4_unicode_ci;
 
 -- Use the database
-USE memory_card_game;
+USE webtech_2025A_fannareme_abdou;
 
 -- ============================================================================
 -- Table: players
@@ -160,20 +156,7 @@ INSERT INTO statistics (player_id, total_games, total_wins, average_moves, avera
 -- Useful Views
 -- ============================================================================
 
--- View: Player Leaderboard
-CREATE VIEW vw_player_leaderboard AS
-SELECT 
-    p.player_id,
-    p.username,
-    s.total_games,
-    s.total_wins,
-    s.best_score,
-    s.best_time,
-    s.average_moves,
-    s.average_time
-FROM players p
-INNER JOIN statistics s ON p.player_id = s.player_id
-ORDER BY s.best_score DESC, s.best_time ASC;
+
 
 -- View: Recent High Scores
 CREATE VIEW vw_recent_high_scores AS
@@ -344,22 +327,3 @@ END //
 
 DELIMITER ;
 
--- ============================================================================
--- Useful Queries for Testing
--- ============================================================================
-
--- Get top 10 scores for a specific grid size
--- SELECT * FROM high_scores WHERE grid_size = 16 ORDER BY score DESC LIMIT 10;
-
--- Get player's game history
--- SELECT * FROM games WHERE player_id = 1 ORDER BY created_at DESC;
-
--- Get overall game statistics
--- SELECT * FROM vw_game_statistics;
-
--- Get current leaderboard
--- SELECT * FROM vw_player_leaderboard LIMIT 10;
-
--- ============================================================================
--- End of SQL File
--- ============================================================================
